@@ -14,7 +14,7 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -24,20 +24,20 @@ class RegisterScreen extends StatelessWidget {
             children: [
               TextField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               Consumer<AuthProvider>(
                 builder: (context, authProvider, child) {
                   return ElevatedButton(
@@ -47,19 +47,28 @@ class RegisterScreen extends StatelessWidget {
                       final password = passwordController.text;
 
                       try {
+                        final navigator = Navigator.of(context);
                         await authProvider.registerUser(name, email, password);
-                        Navigator.pushReplacementNamed(context, '/login');
+                        navigator.pushReplacementNamed('/login');
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(authProvider.errorMessage ?? 'An error occurred'),
-                          ),
-                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(authProvider.errorMessage ?? 'An error occurred'),
+                            ),
+                          );
+                        }
                       }
                     },
-                    child: Text('Register'),
+                    child: const Text('Register'),
                   );
                 },
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                child: const Text('Don\'t have an account? Login here'),
               ),
             ],
           ),

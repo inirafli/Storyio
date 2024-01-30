@@ -7,6 +7,7 @@ import 'package:storyio/provider/auth_provider.dart';
 import 'package:storyio/ui/home_screen.dart';
 import 'package:storyio/ui/login_screen.dart';
 import 'package:storyio/ui/register_screen.dart';
+import 'package:storyio/ui/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,10 +50,19 @@ class MyApp extends StatelessWidget {
           textTheme: appTextTheme,
         ),
         initialRoute: '/',
-        routes: {
-          '/': (context) => LoginScreen(),
-          '/register': (context) => RegisterScreen(),
-          '/home': (context) => HomeScreen(),
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/':
+              return MaterialPageRoute(builder: (context) => SplashScreen());
+            case '/login':
+              return MaterialPageRoute(builder: (context) => LoginScreen());
+            case '/register':
+              return MaterialPageRoute(builder: (context) => RegisterScreen());
+            case '/home':
+              return MaterialPageRoute(builder: (context) => HomeScreen());
+            default:
+              return MaterialPageRoute(builder: (context) => SplashScreen());
+          }
         },
       ),
     );
