@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:storyio/common/styles.dart';
+import 'package:storyio/data/api/api_services.dart';
+import 'package:storyio/preferences/auth_preferences.dart';
+import 'package:storyio/provider/auth_provider.dart';
+import 'package:storyio/ui/home_screen.dart';
+import 'package:storyio/ui/login_screen.dart';
+import 'package:storyio/ui/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,18 +17,43 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Storyio',
-      theme: ThemeData(
-        colorScheme:Theme.of(context).colorScheme.copyWith(
-          primary: primaryColor,
-          secondary:secondaryColor,
-          surface: subPrimaryColor,
-          onPrimary: backgroundColor,
-          onSecondary: textColor,
-          background: backgroundColor,
+    return ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: MaterialApp(
+        title: 'Storyio',
+        theme: ThemeData(
+          colorScheme:Theme.of(context).colorScheme.copyWith(
+            primary: primaryColor,
+            secondary:secondaryColor,
+            surface: subPrimaryColor,
+            onPrimary: backgroundColor,
+            onSecondary: textColor,
+            background: backgroundColor,
+          ),
+          appBarTheme: const AppBarTheme(
+            titleTextStyle: TextStyle(
+              color: backgroundColor,
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: backgroundColor,
+            )
+          ),
+          snackBarTheme: SnackBarThemeData(
+            contentTextStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: Theme.of(context).colorScheme.background,
+            ),
+            backgroundColor: primaryColor,
+          ),
+          textTheme: appTextTheme,
         ),
-        textTheme: appTextTheme,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => LoginScreen(),
+          '/register': (context) => RegisterScreen(),
+          '/home': (context) => HomeScreen(),
+        },
       ),
     );
   }
