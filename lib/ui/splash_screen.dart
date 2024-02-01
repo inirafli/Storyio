@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:storyio/widgets/splash_widget.dart';
 
 import '../preferences/auth_preferences.dart';
-import 'home_screen.dart';
-import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -24,19 +24,38 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (context.mounted) {
       if (isLoggedIn) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
+        Navigator.pushReplacementNamed(context, '/login');
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: const Center(
-        child: CircularProgressIndicator(),
+    final screenSize = MediaQuery.of(context).size;
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Theme.of(context).colorScheme.primary,
+    ));
+
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          width: screenSize.width,
+          height: screenSize.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.surface,
+              ],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+            ),
+          ),
+          child: const SplashWidget(),
+        ),
       ),
     );
   }

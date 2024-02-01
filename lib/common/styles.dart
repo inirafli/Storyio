@@ -12,7 +12,7 @@ final TextTheme appTextTheme = TextTheme(
       fontSize: 96, fontWeight: FontWeight.w300, letterSpacing: -1.5),
   displayMedium: GoogleFonts.workSans(
       fontSize: 60, fontWeight: FontWeight.w600, letterSpacing: -0.5),
-  displaySmall: GoogleFonts.workSans(fontSize: 48, fontWeight: FontWeight.w400),
+  displaySmall: GoogleFonts.workSans(fontSize: 48, fontWeight: FontWeight.w600),
   headlineMedium: GoogleFonts.workSans(
       fontSize: 34, fontWeight: FontWeight.w400, letterSpacing: 0.25),
   headlineSmall: GoogleFonts.workSans(fontSize: 24, fontWeight: FontWeight.w700),
@@ -27,7 +27,7 @@ final TextTheme appTextTheme = TextTheme(
   bodyMedium: GoogleFonts.workSans(
       fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
   labelLarge: GoogleFonts.workSans(
-      fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
+      fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 1.25),
   bodySmall: GoogleFonts.workSans(
       fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
   labelSmall: GoogleFonts.workSans(

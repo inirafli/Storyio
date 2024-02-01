@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               foregroundColor: backgroundColor,
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
             )
           ),
           snackBarTheme: SnackBarThemeData(

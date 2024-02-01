@@ -18,7 +18,7 @@ class ApiService {
       },
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return RegisterResponse.fromJson(jsonDecode(response.body));
     } else {
       final responseBody = jsonDecode(response.body);
@@ -35,7 +35,7 @@ class ApiService {
       },
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return LoginResponse.fromJson(jsonDecode(response.body));
     } else {
       final responseBody = jsonDecode(response.body);
