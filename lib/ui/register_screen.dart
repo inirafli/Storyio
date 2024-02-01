@@ -1,76 +1,164 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../common/result_state.dart';
 import '../provider/auth_provider.dart';
+import '../widgets/auth_header_widget.dart';
+import '../widgets/custome_text_field_widget.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isPasswordVisible = false;
 
-  RegisterScreen({super.key});
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-              ),
-              const SizedBox(height: 32),
-              Consumer<AuthProvider>(
-                builder: (context, authProvider, child) {
-                  return ElevatedButton(
-                    onPressed: () async {
-                      final name = nameController.text;
-                      final email = emailController.text;
-                      final password = passwordController.text;
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const HeaderText(
+                  line1: 'Welcome to Storyio,',
+                  line2: 'Make a new Account',
+                ),
+                const SizedBox(height: 32),
+                const Text('Your Name'),
+                const SizedBox(height: 8),
+                CustomTextField(
+                  controller: nameController,
+                  hintText: 'Name',
+                ),
+                const SizedBox(height: 16),
+                const Text('Your Email'),
+                const SizedBox(height: 8),
+                CustomTextField(
+                  controller: emailController,
+                  hintText: 'Email',
+                ),
+                const SizedBox(height: 16),
+                const Text('Your Password'),
+                const SizedBox(height: 8),
+                CustomTextField(
+                  controller: passwordController,
+                  hintText: 'Password',
+                  obscureText: true,
+                  isPasswordVisible: isPasswordVisible,
+                  onSuffixIconPressed: () {
+                    setState(() {
+                      isPasswordVisible = !isPasswordVisible;
+                    });
+                  },
+                ),
+                const SizedBox(height: 32),
+                Consumer<AuthProvider>(
+                  builder: (context, authProvider, child) {
+                    return ElevatedButton(
+                      onPressed: authProvider.registerState ==
+                              ResultState.loading
+                          ? null
+                          : () async {
+                              final name = nameController.text;
+                              final email = emailController.text;
+                              final password = passwordController.text;
+                              final navigator = Navigator.of(context);
 
-                      try {
-                        final navigator = Navigator.of(context);
-                        await authProvider.registerUser(name, email, password);
-                        navigator.pushReplacementNamed('/login');
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(authProvider.errorMessage ?? 'An error occurred'),
+                              await authProvider.registerUser(
+                                  name, email, password);
+
+                              if (authProvider.registerState ==
+                                  ResultState.error) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(authProvider.errorMessage ??
+                                          'An error occurred'),
+                                    ),
+                                  );
+                                }
+                              } else if (authProvider.registerState ==
+                                  ResultState.done) {
+                                navigator.pushReplacementNamed('/login');
+                              }
+                            },
+                      child: authProvider.registerState == ResultState.loading
+                          ? Center(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 3),
+                                child: SizedBox(
+                                  width: 14.0,
+                                  height: 14.0,
+                                  child: CircularProgressIndicator(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    strokeWidth: 2.0,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Text(
+                              'Register',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                  ),
                             ),
-                          );
-                        }
-                      }
-                    },
-                    child: const Text('Register'),
-                  );
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/login');
-                },
-                child: const Text('Don\'t have an account? Login here'),
-              ),
-            ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Already have an account?',
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 2),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  style: TextButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    'Login here',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

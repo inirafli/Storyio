@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:storyio/common/result_state.dart';
 
 import '../provider/auth_provider.dart';
+import '../widgets/auth_header_widget.dart';
+import '../widgets/custome_text_field_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -26,12 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Theme.of(context).colorScheme.background,
-      statusBarIconBrightness: Brightness.dark,
-    ));
-
     return SafeArea(
       child: Scaffold(
         body: Center(
@@ -42,76 +38,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, // Align left
-                    children: [
-                      Text(
-                        'Welcome back to Storyio,',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      const SizedBox(height: 6.0),
-                      Text(
-                        'Login with your Account',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
+                  const HeaderText(
+                    line1: 'Welcome back to Storyio,',
+                    line2: 'Login with your Account',
                   ),
                   const SizedBox(height: 32),
 
                   const Text('Your Email'),
                   const SizedBox(height: 8),
-                  TextField(
+                  CustomTextField(
                     controller: emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.background,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      hintStyle: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    hintText: 'Email',
                   ),
                   const SizedBox(height: 16),
                   const Text('Your Password'),
                   const SizedBox(height: 8),
-                  TextField(
+                  CustomTextField(
                     controller: passwordController,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.background,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          size: 20.0,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
-                        },
-                      ),
-                      hintStyle: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    obscureText: !isPasswordVisible,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    hintText: 'Password',
+                    obscureText: true,
+                    isPasswordVisible: isPasswordVisible,
+                    onSuffixIconPressed: () {
+                      setState(() {
+                        isPasswordVisible = !isPasswordVisible;
+                      });
+                    },
                   ),
                   const SizedBox(height: 32),
                   Consumer<AuthProvider>(
@@ -139,14 +90,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: authProvider.loginState == ResultState.loading
                             ? Center(
-                                child: SizedBox(
-                                  width: 14.0,
-                                  height: 14.0,
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                    strokeWidth: 2.0,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 3),
+                                  child: SizedBox(
+                                    width: 14.0,
+                                    height: 14.0,
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                      strokeWidth: 2.0,
+                                    ),
                                   ),
                                 ),
                               )

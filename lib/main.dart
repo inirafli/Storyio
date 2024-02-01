@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:storyio/common/styles.dart';
 import 'package:storyio/data/api/api_services.dart';
@@ -18,6 +19,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: backgroundColor,
+      statusBarBrightness: Brightness.dark,
+    ));
+
     return ChangeNotifierProvider(
       create: (context) => AuthProvider(),
       child: MaterialApp(
@@ -31,14 +38,10 @@ class MyApp extends StatelessWidget {
             onSecondary: textColor,
             background: backgroundColor,
           ),
-          appBarTheme: const AppBarTheme(
-            titleTextStyle: TextStyle(
-              color: backgroundColor,
-            ),
-          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               foregroundColor: backgroundColor,
+              disabledBackgroundColor: primaryColor,
               padding: const EdgeInsets.symmetric(vertical: 12.0),
             )
           ),
@@ -54,15 +57,15 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case '/':
-              return MaterialPageRoute(builder: (context) => SplashScreen());
+              return MaterialPageRoute(builder: (context) => const SplashScreen());
             case '/login':
-              return MaterialPageRoute(builder: (context) => LoginScreen());
+              return MaterialPageRoute(builder: (context) => const LoginScreen());
             case '/register':
-              return MaterialPageRoute(builder: (context) => RegisterScreen());
+              return MaterialPageRoute(builder: (context) => const RegisterScreen());
             case '/home':
-              return MaterialPageRoute(builder: (context) => HomeScreen());
+              return MaterialPageRoute(builder: (context) => const HomeScreen());
             default:
-              return MaterialPageRoute(builder: (context) => SplashScreen());
+              return MaterialPageRoute(builder: (context) => const SplashScreen());
           }
         },
       ),

@@ -35,8 +35,8 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       errorMessage = 'Registration failed, ${_sanitizeErrorMessage(e.toString())}';
       _registerState = ResultState.error;
+      notifyListeners();
       print(errorMessage);
-      throw Exception('Registration failed, $e');
     }
   }
 

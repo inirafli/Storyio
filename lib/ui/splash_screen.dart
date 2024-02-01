@@ -35,10 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Theme.of(context).colorScheme.primary,
-    ));
-
     return SafeArea(
       child: Scaffold(
         body: Container(
