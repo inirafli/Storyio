@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:storyio/common/result_state.dart';
 
 import '../provider/auth_provider.dart';
 import '../widgets/auth_header_widget.dart';
-import '../widgets/custome_text_field_widget.dart';
+import '../widgets/custom_text_field_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

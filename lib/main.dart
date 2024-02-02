@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:storyio/common/styles.dart';
-import 'package:storyio/data/api/api_services.dart';
-import 'package:storyio/preferences/auth_preferences.dart';
 import 'package:storyio/provider/auth_provider.dart';
+import 'package:storyio/provider/story_provider.dart';
 import 'package:storyio/ui/home_screen.dart';
 import 'package:storyio/ui/login_screen.dart';
 import 'package:storyio/ui/register_screen.dart';
@@ -19,14 +18,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: backgroundColor,
-      statusBarBrightness: Brightness.dark,
-    ));
-
-    return ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => StoryProvider()),
+      ],
       child: MaterialApp(
         title: 'Storyio',
         theme: ThemeData(
@@ -37,6 +33,19 @@ class MyApp extends StatelessWidget {
             onPrimary: backgroundColor,
             onSecondary: textColor,
             background: backgroundColor,
+          ),
+          appBarTheme: const AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: backgroundColor,
+              statusBarIconBrightness: Brightness.dark
+            ),
+            scrolledUnderElevation: 0.0,
+            backgroundColor: backgroundColor,
+            foregroundColor: primaryColor,
+          ),
+          cardTheme: const CardTheme(
+            color: backgroundColor,
+            elevation: 2.0,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
