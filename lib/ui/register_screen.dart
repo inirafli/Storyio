@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../common/result_state.dart';
@@ -8,7 +7,10 @@ import '../widgets/auth_header_widget.dart';
 import '../widgets/custom_text_field_widget.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  final Function() onLogin;
+  final Function() onRegister;
+
+  const RegisterScreen({Key? key, required this.onLogin, required this.onRegister}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -82,7 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               final name = nameController.text;
                               final email = emailController.text;
                               final password = passwordController.text;
-                              final navigator = Navigator.of(context);
 
                               await authProvider.registerUser(
                                   name, email, password);
@@ -99,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }
                               } else if (authProvider.registerState ==
                                   ResultState.done) {
-                                navigator.pushReplacementNamed('/login');
+                                widget.onRegister();
                               }
                             },
                       child: authProvider.registerState == ResultState.loading
@@ -142,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 2),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/login');
+                    widget.onLogin();
                   },
                   style: TextButton.styleFrom(
                     minimumSize: Size.zero,

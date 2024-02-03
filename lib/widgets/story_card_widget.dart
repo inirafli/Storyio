@@ -11,8 +11,8 @@ class StoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+    return GestureDetector(
+      onTap: () {},
       child: Container(
         height: 320,
         decoration: BoxDecoration(
@@ -62,17 +62,6 @@ class StoryCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.background,
                           ),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        // Handle the tap on the whole card
-                      },
-                      splashColor: Colors.black.withOpacity(0.1),
                     ),
                   ),
                 ),

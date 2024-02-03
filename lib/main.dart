@@ -2,19 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:storyio/common/styles.dart';
+import 'package:storyio/preferences/auth_preferences.dart';
 import 'package:storyio/provider/auth_provider.dart';
 import 'package:storyio/provider/story_provider.dart';
-import 'package:storyio/ui/home_screen.dart';
-import 'package:storyio/ui/login_screen.dart';
-import 'package:storyio/ui/register_screen.dart';
-import 'package:storyio/ui/splash_screen.dart';
+import 'package:storyio/routes/router_delegate.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: primaryColor,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late MyRouterDelegate myRouterDelegate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final authPreferences = AuthPreferences();
+    myRouterDelegate = MyRouterDelegate(authPreferences);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +45,18 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Storyio',
         theme: ThemeData(
-          colorScheme:Theme.of(context).colorScheme.copyWith(
+          colorScheme: Theme
+              .of(context)
+              .colorScheme
+              .copyWith(
             primary: primaryColor,
-            secondary:secondaryColor,
+            secondary: secondaryColor,
             surface: subPrimaryColor,
             onPrimary: backgroundColor,
             onSecondary: textColor,
             background: backgroundColor,
           ),
           appBarTheme: const AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: backgroundColor,
-              statusBarIconBrightness: Brightness.dark
-            ),
             scrolledUnderElevation: 0.0,
             backgroundColor: backgroundColor,
             foregroundColor: primaryColor,
@@ -48,35 +66,31 @@ class MyApp extends StatelessWidget {
             elevation: 2.0,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: backgroundColor,
-              disabledBackgroundColor: primaryColor,
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-            )
+              style: ElevatedButton.styleFrom(
+                foregroundColor: backgroundColor,
+                disabledBackgroundColor: primaryColor,
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+              )
           ),
           snackBarTheme: SnackBarThemeData(
-            contentTextStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.background,
+            contentTextStyle: Theme
+                .of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .background,
             ),
             backgroundColor: primaryColor,
           ),
           textTheme: appTextTheme,
         ),
-        initialRoute: '/',
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/':
-              return MaterialPageRoute(builder: (context) => const SplashScreen());
-            case '/login':
-              return MaterialPageRoute(builder: (context) => const LoginScreen());
-            case '/register':
-              return MaterialPageRoute(builder: (context) => const RegisterScreen());
-            case '/home':
-              return MaterialPageRoute(builder: (context) => const HomeScreen());
-            default:
-              return MaterialPageRoute(builder: (context) => const SplashScreen());
-          }
-        },
+        home: Router(
+          routerDelegate: myRouterDelegate,
+          backButtonDispatcher: RootBackButtonDispatcher(),
+        ),
       ),
     );
   }

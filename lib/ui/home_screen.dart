@@ -8,7 +8,9 @@ import '../provider/story_provider.dart';
 import '../widgets/story_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final Function() onLogout;
+
+  const HomeScreen({Key? key, required this.onLogout}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,29 +28,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size(0, 46),
+          preferredSize: const Size(0, 48),
           child: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
             title: Text(
                 'Storyio',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.background,
                 fontWeight: FontWeight.bold,
               ),
             ),
             actions: [
               IconButton(
-                icon: const Icon(
+                icon: Icon(
                     Icons.exit_to_app,
                   size: 20.0,
+                  color: Theme.of(context).colorScheme.background,
                 ),
                 onPressed: () async {
                   final navigator = Navigator.of(context);
                   final authProvider = Provider.of<AuthProvider>(context, listen: false);
                   await authProvider.logoutUser();
-                  navigator.pushReplacementNamed('/login');
+                  widget.onLogout();
                 },
               ),
             ],
@@ -66,14 +72,26 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             } else {
               final stories = storyProvider.storyList;
-              return ListView.builder(
+              return ListView.separated(
+                key: listKey,
                 itemCount: stories.length,
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16.0),
                 itemBuilder: (context, index) {
                   return StoryCard(story: stories[index]);
                 },
               );
             }
           },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/add_story');
+          },
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: Icon(
+            Icons.edit,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       ),
     );

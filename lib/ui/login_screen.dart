@@ -7,7 +7,11 @@ import '../widgets/auth_header_widget.dart';
 import '../widgets/custom_text_field_widget.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final Function() onLogin;
+  final Function() onRegister;
+
+  const LoginScreen({Key? key, required this.onLogin, required this.onRegister})
+      : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -42,7 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     line2: 'Login with your Account',
                   ),
                   const SizedBox(height: 32),
-
                   const Text('Your Email'),
                   const SizedBox(height: 8),
                   CustomTextField(
@@ -67,30 +70,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   Consumer<AuthProvider>(
                     builder: (context, authProvider, child) {
                       return ElevatedButton(
-                        onPressed: authProvider.loginState == ResultState.loading ? null
+                        onPressed: authProvider.loginState ==
+                                ResultState.loading
+                            ? null
                             : () async {
-                          final email = emailController.text;
-                          final password = passwordController.text;
-                          final navigator = Navigator.of(context);
+                                final email = emailController.text;
+                                final password = passwordController.text;
 
-                          await authProvider.loginUser(email, password);
+                                await authProvider.loginUser(email, password);
 
-                          if (authProvider.loginState == ResultState.error) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(authProvider.errorMessage ?? 'An error occurred'),
-                                ),
-                              );
-                            }
-                          } else if (authProvider.loginState == ResultState.done) {
-                            navigator.pushReplacementNamed('/home');
-                          }
-                        },
+                                if (authProvider.loginState ==
+                                    ResultState.error) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            authProvider.errorMessage ??
+                                                'An error occurred'),
+                                      ),
+                                    );
+                                  }
+                                } else if (authProvider.loginState ==
+                                    ResultState.done) {
+                                  widget.onLogin();
+                                }
+                              },
                         child: authProvider.loginState == ResultState.loading
                             ? Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 3),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 3),
                                   child: SizedBox(
                                     width: 14.0,
                                     height: 14.0,
@@ -104,27 +113,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               )
                             : Text(
-                          'Login',
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.background,
-                          ),
-                        ),
+                                'Login',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                    ),
+                              ),
                       );
                     },
                   ),
                   const SizedBox(height: 24),
-
                   Text(
                     "Don't have an account?",
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
-
                   const SizedBox(height: 2),
-
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/register');
+                      widget.onRegister();
                     },
                     style: TextButton.styleFrom(
                       minimumSize: Size.zero,
@@ -134,9 +145,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       'Register here',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ),
                 ],

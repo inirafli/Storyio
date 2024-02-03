@@ -6,8 +6,9 @@ class AuthPreferences {
   static const _keyIsLoggedIn = 'isLoggedIn';
   static const _keyUserData = 'userData';
 
-  static Future<bool> isLoggedIn() async {
+  Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
+    await Future.delayed(const Duration(seconds: 2));
     final loggedIn = prefs.getBool(_keyIsLoggedIn) ?? false;
     print('isLoggedIn: $loggedIn');
     return loggedIn;
