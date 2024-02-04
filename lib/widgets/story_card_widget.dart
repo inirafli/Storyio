@@ -6,15 +6,16 @@ import 'package:storyio/data/model/story.dart';
 
 class StoryCard extends StatelessWidget {
   final Story story;
+  final Function() onStoryTap;
 
-  const StoryCard({Key? key, required this.story}) : super(key: key);
+  const StoryCard({Key? key, required this.story, required this.onStoryTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onStoryTap,
       child: Container(
-        height: 320,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.background,
           boxShadow: [
@@ -30,25 +31,26 @@ class StoryCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                CachedNetworkImage(
-                  cacheKey: 'image-cache-${story.photoUrl}',
-                  imageUrl: story.photoUrl,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Image.asset(
-                    "assets/loading_image.gif",
-                    width: 64,
-                    height: 64,
+                Hero(
+                  tag: 'image-${story.photoUrl}',
+                  child: CachedNetworkImage(
+                    cacheKey: 'image-cache-${story.photoUrl}',
+                    imageUrl: story.photoUrl,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                      "assets/loading_image.gif",
+                    ),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.error,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    cacheManager: CacheManager(Config(
+                      'image-cache-${story.photoUrl}',
+                      stalePeriod: const Duration(days: 1),
+                    )),
                   ),
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  cacheManager: CacheManager(Config(
-                    'image-cache-${story.photoUrl}',
-                    stalePeriod: const Duration(days: 1),
-                  )),
                 ),
                 Positioned(
                   bottom: 4.0,
@@ -68,23 +70,44 @@ class StoryCard extends StatelessWidget {
               ],
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-              child: Column(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    story.description,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleMedium,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Icon(
+                      Icons.account_circle_rounded,
+                      color: Theme.of(context).colorScheme.surface,
+                      size: 32.0,
+                    ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'from ${story.name}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall,
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          story.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(),
+                        ),
+                        const SizedBox(height: 2.0),
+                        Text(
+                          story.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -5,6 +5,7 @@ import '../ui/home_screen.dart';
 import '../ui/login_screen.dart';
 import '../ui/register_screen.dart';
 import '../ui/splash_screen.dart';
+import '../ui/story_detail_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -65,29 +66,45 @@ class MyRouterDelegate extends RouterDelegate
       ),
   ];
 
-  List<Page> get _loggedInStack => [
-    MaterialPage(
-      key: const ValueKey("QuotesListPage"),
-      child: HomeScreen(
-        /*quotes: quotes,
-        onTapped: (String quoteId) {
-          selectedQuote = quoteId;
-          notifyListeners();
-        },*/
-        onLogout: () {
-          isLoggedIn = false;
-          notifyListeners();
-        },
-      ),
-    ),
-    /*if (selectedQuote != null)
-      MaterialPage(
-        key: ValueKey(selectedQuote),
-        child: QuoteDetailsScreen(
-          quoteId: selectedQuote!,
+  List<Page> get _loggedInStack {
+    if (selectedStory != null) {
+      return [
+        MaterialPage(
+          key: const ValueKey("HomeScreen"),
+          child: HomeScreen(
+            onStoryTap: (storyId) {
+              selectedStory = storyId;
+              notifyListeners();
+            },
+            onLogout: () {
+              isLoggedIn = false;
+              notifyListeners();
+            },
+          ),
         ),
-      ),*/
-  ];
+        MaterialPage(
+          key: ValueKey(selectedStory),
+          child: StoryDetailScreen(storyId: selectedStory!,),
+        ),
+      ];
+    } else {
+      return [
+        MaterialPage(
+          key: const ValueKey("HomeScreen"),
+          child: HomeScreen(
+            onStoryTap: (storyId) {
+              selectedStory = storyId;
+              notifyListeners();
+            },
+            onLogout: () {
+              isLoggedIn = false;
+              notifyListeners();
+            },
+          ),
+        ),
+      ];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

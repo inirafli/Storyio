@@ -9,17 +9,40 @@ import '../widgets/story_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function() onLogout;
+  final ValueChanged<String>? onStoryTap;
 
-  const HomeScreen({Key? key, required this.onLogout}) : super(key: key);
+  const HomeScreen({Key? key, required this.onLogout, this.onStoryTap})
+      : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ScrollController _scrollController = ScrollController();
+  late String userName;
+
   @override
   void initState() {
     super.initState();
+    _loadUserData();
+    _loadStories();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = await AuthPreferences.getUserData();
+    setState(() {
+      userName = user.name;
+    });
+  }
+
+  void _loadStories() {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     AuthPreferences.getUserData().then((user) {
       storyProvider.getAllStories(user.token);
@@ -28,8 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
-
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -37,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
             title: Text(
-                'Storyio',
+              'Storyio',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: Theme.of(context).colorScheme.background,
                 fontWeight: FontWeight.bold,
@@ -46,13 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: Icon(
-                    Icons.exit_to_app,
+                  Icons.exit_to_app,
                   size: 20.0,
                   color: Theme.of(context).colorScheme.background,
                 ),
                 onPressed: () async {
-                  final navigator = Navigator.of(context);
-                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  final authProvider =
+                  Provider.of<AuthProvider>(context, listen: false);
                   await authProvider.logoutUser();
                   widget.onLogout();
                 },
@@ -60,28 +81,77 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: Consumer<StoryProvider>(
-          builder: (context, storyProvider, child) {
-            if (storyProvider.storyListState == ResultState.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (storyProvider.storyListState == ResultState.error) {
-              return Center(
-                child: Text(storyProvider.storyListErrorMessage ?? 'Failed to load Stories'),
-              );
-            } else {
-              final stories = storyProvider.storyList;
-              return ListView.separated(
-                key: listKey,
-                itemCount: stories.length,
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16.0),
-                itemBuilder: (context, index) {
-                  return StoryCard(story: stories[index]);
-                },
-              );
-            }
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await _loadUserData();
+            _loadStories();
           },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.titleLarge,
+                          children: [
+                            const TextSpan(text: 'Hello, '),
+                            TextSpan(
+                              text: userName,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const TextSpan(text: '!'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 1.0),
+                      Text(
+                        'Discover new stories and share your own',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Consumer<StoryProvider>(
+                  builder: (context, storyProvider, child) {
+                    if (storyProvider.storyListState == ResultState.loading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (storyProvider.storyListState == ResultState.error) {
+                      return Center(
+                        child: Text(storyProvider.storyListErrorMessage ??
+                            'Failed to load Stories'),
+                      );
+                    } else {
+                      final stories = storyProvider.storyList;
+                      return ListView.separated(
+                        key: const PageStorageKey<String>('storylist'),
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: stories.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                        const SizedBox(height: 24.0),
+                        itemBuilder: (context, index) {
+                          return StoryCard(
+                            story: stories[index],
+                            onStoryTap: () {
+                              widget.onStoryTap?.call(stories[index].id);
+                            },
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

@@ -13,6 +13,7 @@ class StoryProvider with ChangeNotifier {
   ResultState _addStoryState = ResultState.done;
   String? _storyListErrorMessage;
   String? _addStoryErrorMessage;
+  String? _storyDetailErrorMessage;
 
   List<Story> get storyList => _storyList;
 
@@ -25,6 +26,8 @@ class StoryProvider with ChangeNotifier {
   String? get storyListErrorMessage => _storyListErrorMessage;
 
   String? get addStoryErrorMessage => _addStoryErrorMessage;
+
+  String? get storyDetailErrorMessage => _storyDetailErrorMessage;
 
   Future<void> getAllStories(String token,
       {int? page, int? size, int? location}) async {
@@ -62,13 +65,17 @@ class StoryProvider with ChangeNotifier {
       final response = await ApiService.getStoryDetail(token, storyId);
 
       if (!response.error) {
+        _storyDetailErrorMessage = null;
         _storyDetailState = ResultState.done;
         notifyListeners();
       } else {
+        _storyDetailErrorMessage = response.message;
         _storyDetailState = ResultState.error;
         notifyListeners();
       }
     } catch (e) {
+      _storyDetailErrorMessage =
+          'Failed to fetch Story Detail, ${_sanitizeErrorMessage(e.toString())}';
       _storyDetailState = ResultState.error;
       notifyListeners();
       print('Error fetching story detail: $e');
