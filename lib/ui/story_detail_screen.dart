@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storyio/widgets/float_back_widget.dart';
 
 import '../common/result_state.dart';
 import '../preferences/auth_preferences.dart';
@@ -46,20 +47,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
           }
         },
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          shape: const CircleBorder(),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          child: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-      ),
+      floatingActionButton: const FloatBackButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }

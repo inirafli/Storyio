@@ -108,7 +108,7 @@ class ApiService {
 
     final response = await http.Response.fromStream(await request.send());
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return AddStoryResponse.fromJson(jsonDecode(response.body));
     } else {
       final responseBody = jsonDecode(response.body);

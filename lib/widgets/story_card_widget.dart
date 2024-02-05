@@ -74,13 +74,10 @@ class StoryCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: Icon(
-                      Icons.account_circle_rounded,
-                      color: Theme.of(context).colorScheme.surface,
-                      size: 32.0,
-                    ),
+                  Icon(
+                    Icons.account_circle_rounded,
+                    color: Theme.of(context).colorScheme.surface,
+                    size: 32.0,
                   ),
                   const SizedBox(width: 16.0),
                   Expanded(
@@ -93,10 +90,11 @@ class StoryCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyMedium
-                              ?.copyWith(),
+                              .bodyMedium?.copyWith(
+                            height: 1.25,
+                          ),
                         ),
-                        const SizedBox(height: 2.0),
+                        const SizedBox(height: 6.0),
                         Text(
                           story.name,
                           maxLines: 1,

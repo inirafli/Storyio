@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../preferences/auth_preferences.dart';
+import '../ui/add_story_screen.dart';
 import '../ui/home_screen.dart';
 import '../ui/login_screen.dart';
 import '../ui/register_screen.dart';
@@ -13,8 +14,8 @@ class MyRouterDelegate extends RouterDelegate
   final AuthPreferences authPreferences;
 
   MyRouterDelegate(
-      this.authPreferences,
-      ) : _navigatorKey = GlobalKey<NavigatorState>() {
+    this.authPreferences,
+  ) : _navigatorKey = GlobalKey<NavigatorState>() {
     _init();
   }
 
@@ -28,43 +29,44 @@ class MyRouterDelegate extends RouterDelegate
   List<Page> historyStack = [];
   bool? isLoggedIn;
   bool isRegister = false;
+  bool isAdd = false;
 
   List<Page> get _splashStack => const [
-    MaterialPage(
-      key: ValueKey("SplashPage"),
-      child: SplashScreen(),
-    ),
-  ];
+        MaterialPage(
+          key: ValueKey("SplashPage"),
+          child: SplashScreen(),
+        ),
+      ];
 
   List<Page> get _loggedOutStack => [
-    MaterialPage(
-      key: const ValueKey("LoginPage"),
-      child: LoginScreen(
-        onLogin: () {
-          isLoggedIn = true;
-          notifyListeners();
-        },
-        onRegister: () {
-          isRegister = true;
-          notifyListeners();
-        },
-      ),
-    ),
-    if (isRegister == true)
-      MaterialPage(
-        key: const ValueKey("RegisterPage"),
-        child: RegisterScreen(
-          onRegister: () {
-            isRegister = false;
-            notifyListeners();
-          },
-          onLogin: () {
-            isRegister = false;
-            notifyListeners();
-          },
+        MaterialPage(
+          key: const ValueKey("LoginPage"),
+          child: LoginScreen(
+            onLogin: () {
+              isLoggedIn = true;
+              notifyListeners();
+            },
+            onRegister: () {
+              isRegister = true;
+              notifyListeners();
+            },
+          ),
         ),
-      ),
-  ];
+        if (isRegister == true)
+          MaterialPage(
+            key: const ValueKey("RegisterPage"),
+            child: RegisterScreen(
+              onRegister: () {
+                isRegister = false;
+                notifyListeners();
+              },
+              onLogin: () {
+                isRegister = false;
+                notifyListeners();
+              },
+            ),
+          ),
+      ];
 
   List<Page> get _loggedInStack {
     if (selectedStory != null) {
@@ -74,17 +76,36 @@ class MyRouterDelegate extends RouterDelegate
           child: HomeScreen(
             onStoryTap: (storyId) {
               selectedStory = storyId;
+              isAdd = false;
               notifyListeners();
             },
             onLogout: () {
               isLoggedIn = false;
+              isAdd = false;
+              notifyListeners();
+            },
+            onAdd: () {
+              isAdd = true;
               notifyListeners();
             },
           ),
         ),
         MaterialPage(
           key: ValueKey(selectedStory),
-          child: StoryDetailScreen(storyId: selectedStory!,),
+          child: StoryDetailScreen(storyId: selectedStory!),
+        ),
+      ];
+    } else if (isAdd) {
+      return [
+        MaterialPage(
+          key: const ValueKey("AddStoryScreen"),
+          child: AddStoryScreen(
+            onHome: () {
+              isAdd = false;
+              selectedStory = null;
+              notifyListeners();
+            },
+          ),
         ),
       ];
     } else {
@@ -94,10 +115,16 @@ class MyRouterDelegate extends RouterDelegate
           child: HomeScreen(
             onStoryTap: (storyId) {
               selectedStory = storyId;
+              isAdd = false;
               notifyListeners();
             },
             onLogout: () {
               isLoggedIn = false;
+              isAdd = false;
+              notifyListeners();
+            },
+            onAdd: () {
+              isAdd = true;
               notifyListeners();
             },
           ),
@@ -125,6 +152,7 @@ class MyRouterDelegate extends RouterDelegate
             return false;
           }
 
+          isAdd = false;
           isRegister = false;
           selectedStory = null;
           notifyListeners();
@@ -134,12 +162,10 @@ class MyRouterDelegate extends RouterDelegate
   }
 
   @override
-  // TODO: implement navigatorKey
   GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
 
   @override
   Future<void> setNewRoutePath(configuration) {
-    // TODO: implement setNewRoutePath
     throw UnimplementedError();
   }
 }

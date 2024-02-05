@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../common/result_state.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/auth_header_widget.dart';
+import '../widgets/custom_action_button_widget.dart';
 import '../widgets/custom_text_field_widget.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -76,61 +77,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 32),
                 Consumer<AuthProvider>(
                   builder: (context, authProvider, child) {
-                    return ElevatedButton(
-                      onPressed: authProvider.registerState ==
-                              ResultState.loading
-                          ? null
-                          : () async {
-                              final name = nameController.text;
-                              final email = emailController.text;
-                              final password = passwordController.text;
+                    return CustomActionButton(
+                      onPressed: () async {
+                        final name = nameController.text;
+                        final email = emailController.text;
+                        final password = passwordController.text;
 
-                              await authProvider.registerUser(
-                                  name, email, password);
+                        await authProvider.registerUser(name, email, password);
 
-                              if (authProvider.registerState ==
-                                  ResultState.error) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(authProvider.errorMessage ??
-                                          'An error occurred'),
-                                    ),
-                                  );
-                                }
-                              } else if (authProvider.registerState ==
-                                  ResultState.done) {
-                                widget.onRegister();
-                              }
-                            },
-                      child: authProvider.registerState == ResultState.loading
-                          ? Center(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 3),
-                                child: SizedBox(
-                                  width: 14.0,
-                                  height: 14.0,
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                    strokeWidth: 2.0,
-                                  ),
-                                ),
+                        if (authProvider.registerState == ResultState.error) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(authProvider.errorMessage ?? 'An error occurred'),
                               ),
-                            )
-                          : Text(
-                              'Register',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                  ),
-                            ),
+                            );
+                          }
+                        } else if (authProvider.registerState == ResultState.done) {
+                          widget.onRegister();
+                        }
+                      },
+                      buttonText: 'Register',
+                      state: authProvider.registerState,
                     );
                   },
                 ),

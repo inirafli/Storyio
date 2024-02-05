@@ -57,11 +57,14 @@ class StoryDetailContent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 16.0),
                     Text(
                       story.description,
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        height: 1.35,
+                      ),
                     ),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: 16.0),
                     Text(
                       'Posted by ${story.name}',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(

@@ -4,6 +4,7 @@ import 'package:storyio/common/result_state.dart';
 
 import '../provider/auth_provider.dart';
 import '../widgets/auth_header_widget.dart';
+import '../widgets/custom_action_button_widget.dart';
 import '../widgets/custom_text_field_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -69,60 +70,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 32),
                   Consumer<AuthProvider>(
                     builder: (context, authProvider, child) {
-                      return ElevatedButton(
-                        onPressed: authProvider.loginState ==
-                                ResultState.loading
-                            ? null
-                            : () async {
-                                final email = emailController.text;
-                                final password = passwordController.text;
+                      return CustomActionButton(
+                        onPressed: () async {
+                          final email = emailController.text;
+                          final password = passwordController.text;
 
-                                await authProvider.loginUser(email, password);
+                          await authProvider.loginUser(email, password);
 
-                                if (authProvider.loginState ==
-                                    ResultState.error) {
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            authProvider.errorMessage ??
-                                                'An error occurred'),
-                                      ),
-                                    );
-                                  }
-                                } else if (authProvider.loginState ==
-                                    ResultState.done) {
-                                  widget.onLogin();
-                                }
-                              },
-                        child: authProvider.loginState == ResultState.loading
-                            ? Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 3),
-                                  child: SizedBox(
-                                    width: 14.0,
-                                    height: 14.0,
-                                    child: CircularProgressIndicator(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                      strokeWidth: 2.0,
-                                    ),
-                                  ),
+                          if (authProvider.loginState == ResultState.error) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(authProvider.errorMessage ?? 'An error occurred'),
                                 ),
-                              )
-                            : Text(
-                                'Login',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                    ),
-                              ),
+                              );
+                            }
+                          } else if (authProvider.loginState == ResultState.done) {
+                            widget.onLogin();
+                          }
+                        },
+                        buttonText: 'Login',
+                        state: authProvider.loginState,
                       );
                     },
                   ),

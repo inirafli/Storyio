@@ -9,9 +9,10 @@ import '../widgets/story_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function() onLogout;
+  final Function() onAdd;
   final ValueChanged<String>? onStoryTap;
 
-  const HomeScreen({Key? key, required this.onLogout, this.onStoryTap})
+  const HomeScreen({Key? key, required this.onLogout, this.onStoryTap, required this.onAdd})
       : super(key: key);
 
   @override
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
-  late String userName;
+  late String userName = '';
 
   @override
   void initState() {
@@ -119,33 +120,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Consumer<StoryProvider>(
                   builder: (context, storyProvider, child) {
-                    if (storyProvider.storyListState == ResultState.loading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (storyProvider.storyListState == ResultState.error) {
-                      return Center(
-                        child: Text(storyProvider.storyListErrorMessage ??
-                            'Failed to load Stories'),
-                      );
-                    } else {
-                      final stories = storyProvider.storyList;
-                      return ListView.separated(
-                        key: const PageStorageKey<String>('storylist'),
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: stories.length,
-                        separatorBuilder: (BuildContext context, int index) =>
-                        const SizedBox(height: 24.0),
-                        itemBuilder: (context, index) {
-                          return StoryCard(
-                            story: stories[index],
-                            onStoryTap: () {
-                              widget.onStoryTap?.call(stories[index].id);
-                            },
-                          );
-                        },
-                      );
+                    switch (storyProvider.storyListState) {
+                      case ResultState.loading:
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      case ResultState.error:
+                        return Center(
+                          child: Text(storyProvider.storyListErrorMessage ??
+                              'Failed to load Stories'),
+                        );
+                      case ResultState.done:
+                        final stories = storyProvider.storyList;
+                        return ListView.separated(
+                          key: const PageStorageKey<String>('storylist'),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: stories.length,
+                          separatorBuilder: (BuildContext context, int index) =>
+                          const SizedBox(height: 24.0),
+                          itemBuilder: (context, index) {
+                            return StoryCard(
+                              story: stories[index],
+                              onStoryTap: () {
+                                widget.onStoryTap?.call(stories[index].id);
+                              },
+                            );
+                          },
+                        );
                     }
                   },
                 ),
@@ -155,8 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/add_story');
+            widget.onAdd();
           },
+          shape: const CircleBorder(),
           backgroundColor: Theme.of(context).colorScheme.secondary,
           child: Icon(
             Icons.edit,
