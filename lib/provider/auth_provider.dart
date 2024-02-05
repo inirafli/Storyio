@@ -16,7 +16,6 @@ class AuthProvider with ChangeNotifier {
   String? errorMessage;
 
   Future<void> registerUser(String name, String email, String password) async {
-    print('RegisterUser: registerUser called!');
     _registerState = ResultState.loading;
     notifyListeners();
 
@@ -36,18 +35,15 @@ class AuthProvider with ChangeNotifier {
       errorMessage = 'Registration failed, ${_sanitizeErrorMessage(e.toString())}';
       _registerState = ResultState.error;
       notifyListeners();
-      print(errorMessage);
     }
   }
 
   Future<void> loginUser(String email, String password) async {
-    print('LoginUser: loginUser called!');
     _loginState = ResultState.loading;
     notifyListeners();
 
     try {
       final response = await ApiService.login(email, password);
-      print('Login Response: $response');
 
       if (!response.error) {
         _currentUser = response.loginResult;
@@ -58,13 +54,11 @@ class AuthProvider with ChangeNotifier {
         errorMessage = _sanitizeErrorMessage(response.message);
         _loginState = ResultState.error;
         notifyListeners();
-        print(errorMessage);
       }
     } catch (e) {
       errorMessage = 'Login failed, ${_sanitizeErrorMessage(e.toString())}';
       _loginState = ResultState.error;
       notifyListeners();
-      print(errorMessage);
     }
   }
 

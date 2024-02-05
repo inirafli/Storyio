@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/common.dart';
+
 class DescriptionTextField extends StatelessWidget {
   final TextEditingController controller;
 
@@ -11,7 +13,7 @@ class DescriptionTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        hintText: 'Enter story description...',
+        hintText: AppLocalizations.of(context)!.descHintText,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: BorderSide(

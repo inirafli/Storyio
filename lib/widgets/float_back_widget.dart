@@ -11,6 +11,7 @@ class FloatBackButton extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).pop();
         },
+        mini: true,
         shape: const CircleBorder(),
         backgroundColor: Theme.of(context).colorScheme.secondary,
         child: Icon(

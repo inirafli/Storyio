@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storyio/common/common.dart';
 
 class SplashWidget extends StatelessWidget {
   const SplashWidget({super.key});
@@ -21,7 +22,7 @@ class SplashWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Your Story, Your Way.',
+                  AppLocalizations.of(context)!.splashText,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: Theme.of(context).colorScheme.background),
                   textAlign: TextAlign.center,

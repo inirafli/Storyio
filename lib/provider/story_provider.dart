@@ -53,7 +53,6 @@ class StoryProvider with ChangeNotifier {
           'Failed to fetch Stories, ${_sanitizeErrorMessage(e.toString())}';
       _storyListState = ResultState.error;
       notifyListeners();
-      print('Error fetching stories: $e');
     }
   }
 
@@ -78,7 +77,6 @@ class StoryProvider with ChangeNotifier {
           'Failed to fetch Story Detail, ${_sanitizeErrorMessage(e.toString())}';
       _storyDetailState = ResultState.error;
       notifyListeners();
-      print('Error fetching story detail: $e');
     }
   }
 
@@ -105,7 +103,6 @@ class StoryProvider with ChangeNotifier {
           'Failed to add new story, ${_sanitizeErrorMessage(e.toString())}';
       _addStoryState = ResultState.error;
       notifyListeners();
-      print('Error adding new story: $e');
     }
   }
 

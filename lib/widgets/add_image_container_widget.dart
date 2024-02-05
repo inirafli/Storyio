@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../common/common.dart';
+
 class ImageContainer extends StatelessWidget {
   final File? pickedImage;
 
@@ -29,7 +31,7 @@ class ImageContainer extends StatelessWidget {
             )
           : Center(
               child: Text(
-                'Your Image will be displayed here',
+                AppLocalizations.of(context)!.imageHolderText,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),

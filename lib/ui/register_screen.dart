@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../common/common.dart';
 import '../common/result_state.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/auth_header_widget.dart';
@@ -42,30 +43,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const HeaderText(
-                  line1: 'Welcome to Storyio,',
-                  line2: 'Make a new Account',
+                HeaderText(
+                  line1: AppLocalizations.of(context)!.registerText,
+                  line2: AppLocalizations.of(context)!.registerSubText,
                 ),
                 const SizedBox(height: 32),
-                const Text('Your Name'),
+                Text(AppLocalizations.of(context)!.formName),
                 const SizedBox(height: 8),
                 CustomTextField(
                   controller: nameController,
-                  hintText: 'Name',
+                  hintText: AppLocalizations.of(context)!.labelName,
                 ),
                 const SizedBox(height: 16),
-                const Text('Your Email'),
+                Text(AppLocalizations.of(context)!.formEmail),
                 const SizedBox(height: 8),
                 CustomTextField(
                   controller: emailController,
                   hintText: 'Email',
                 ),
                 const SizedBox(height: 16),
-                const Text('Your Password'),
+                Text(AppLocalizations.of(context)!.formPassword),
                 const SizedBox(height: 8),
                 CustomTextField(
                   controller: passwordController,
-                  hintText: 'Password',
+                  hintText: AppLocalizations.of(context)!.labelPassword,
                   obscureText: true,
                   isPasswordVisible: isPasswordVisible,
                   onSuffixIconPressed: () {
@@ -97,14 +98,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           widget.onRegister();
                         }
                       },
-                      buttonText: 'Register',
+                      buttonText: AppLocalizations.of(context)!.registerButtonText,
                       state: authProvider.registerState,
                     );
                   },
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Already have an account?',
+                  AppLocalizations.of(context)!.haveAnAccount,
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -119,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   child: Text(
-                    'Login here',
+                    AppLocalizations.of(context)!.loginHere,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,

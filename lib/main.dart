@@ -7,6 +7,8 @@ import 'package:storyio/provider/auth_provider.dart';
 import 'package:storyio/provider/story_provider.dart';
 import 'package:storyio/routes/router_delegate.dart';
 
+import 'common/common.dart';
+
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -44,6 +46,8 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         title: 'Storyio',
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           colorScheme: Theme
               .of(context)

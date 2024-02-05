@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storyio/widgets/home_app_bar_widget.dart';
 
 import '../common/result_state.dart';
 import '../preferences/auth_preferences.dart';
-import '../provider/auth_provider.dart';
 import '../provider/story_provider.dart';
+import '../widgets/header_home_widget.dart';
 import '../widgets/story_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,7 +13,8 @@ class HomeScreen extends StatefulWidget {
   final Function() onAdd;
   final ValueChanged<String>? onStoryTap;
 
-  const HomeScreen({Key? key, required this.onLogout, this.onStoryTap, required this.onAdd})
+  const HomeScreen(
+      {Key? key, required this.onLogout, this.onStoryTap, required this.onAdd})
       : super(key: key);
 
   @override
@@ -54,34 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size(0, 48),
-          child: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            title: Text(
-              'Storyio',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.background,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.exit_to_app,
-                  size: 20.0,
-                  color: Theme.of(context).colorScheme.background,
-                ),
-                onPressed: () async {
-                  final authProvider =
-                  Provider.of<AuthProvider>(context, listen: false);
-                  await authProvider.logoutUser();
-                  widget.onLogout();
-                },
-              ),
-            ],
-          ),
-        ),
+        appBar: HomeAppBar(onLogout: widget.onLogout),
         body: RefreshIndicator(
           onRefresh: () async {
             await _loadUserData();
@@ -92,43 +67,30 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.titleLarge,
-                          children: [
-                            const TextSpan(text: 'Hello, '),
-                            TextSpan(
-                              text: userName,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const TextSpan(text: '!'),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 1.0),
-                      Text(
-                        'Discover new stories and share your own',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                ),
+                HeaderSection(userName: userName),
                 Consumer<StoryProvider>(
                   builder: (context, storyProvider, child) {
                     switch (storyProvider.storyListState) {
                       case ResultState.loading:
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return Container(
+                          constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.65,
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         );
                       case ResultState.error:
-                        return Center(
-                          child: Text(storyProvider.storyListErrorMessage ??
-                              'Failed to load Stories'),
+                        return Container(
+                          constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.65,
+                          ),
+                          child: Center(
+                            child: Text(storyProvider.storyListErrorMessage ??
+                                'Failed to load Stories'),
+                          ),
                         );
                       case ResultState.done:
                         final stories = storyProvider.storyList;
@@ -138,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           shrinkWrap: true,
                           itemCount: stories.length,
                           separatorBuilder: (BuildContext context, int index) =>
-                          const SizedBox(height: 24.0),
+                              const SizedBox(height: 24.0),
                           itemBuilder: (context, index) {
                             return StoryCard(
                               story: stories[index],

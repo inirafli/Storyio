@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../common/common.dart';
 import '../data/model/story.dart';
 import '../provider/story_provider.dart';
 
@@ -66,14 +67,14 @@ class StoryDetailContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 16.0),
                     Text(
-                      'Posted by ${story.name}',
+                      '${AppLocalizations.of(context)!.detailLabel}${story.name}',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      'on $formattedDate',
+                      '${AppLocalizations.of(context)!.detailOn} $formattedDate',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],

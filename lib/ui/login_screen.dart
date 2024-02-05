@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storyio/common/common.dart';
 import 'package:storyio/common/result_state.dart';
 
 import '../provider/auth_provider.dart';
@@ -42,23 +43,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const HeaderText(
-                    line1: 'Welcome back to Storyio,',
-                    line2: 'Login with your Account',
+                  HeaderText(
+                    line1: AppLocalizations.of(context)!.loginText,
+                    line2: AppLocalizations.of(context)!.loginSubText,
                   ),
                   const SizedBox(height: 32),
-                  const Text('Your Email'),
+                  Text(AppLocalizations.of(context)!.formEmail),
                   const SizedBox(height: 8),
                   CustomTextField(
                     controller: emailController,
                     hintText: 'Email',
                   ),
                   const SizedBox(height: 16),
-                  const Text('Your Password'),
+                  Text(AppLocalizations.of(context)!.formPassword),
                   const SizedBox(height: 8),
                   CustomTextField(
                     controller: passwordController,
-                    hintText: 'Password',
+                    hintText: AppLocalizations.of(context)!.labelPassword,
                     obscureText: true,
                     isPasswordVisible: isPasswordVisible,
                     onSuffixIconPressed: () {
@@ -89,14 +90,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             widget.onLogin();
                           }
                         },
-                        buttonText: 'Login',
+                        buttonText: AppLocalizations.of(context)!.loginButtonText,
                         state: authProvider.loginState,
                       );
                     },
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    "Don't have an account?",
+                    AppLocalizations.of(context)!.dontHaveAccount,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -111,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     child: Text(
-                      'Register here',
+                        AppLocalizations.of(context)!.registerHere,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../common/common.dart';
 import '../common/result_state.dart';
 import '../preferences/auth_preferences.dart';
 import '../provider/story_provider.dart';
@@ -48,60 +49,65 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ImageContainer(pickedImage: _pickedImage),
-                const SizedBox(height: 32.0),
-                ActionButtons(
-                  onCameraView: _onCameraView,
-                  onGalleryView: _onGalleryView,
-                ),
-                const SizedBox(height: 32.0),
-                DescriptionTextField(controller: _descriptionController),
-              ],
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ImageContainer(pickedImage: _pickedImage),
+                  const SizedBox(height: 32.0),
+                  ActionButtons(
+                    onCameraView: _onCameraView,
+                    onGalleryView: _onGalleryView,
+                  ),
+                  const SizedBox(height: 32.0),
+                  DescriptionTextField(controller: _descriptionController),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      floatingActionButton: const FloatBackButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<StoryProvider>(
-          builder: (context, storyProvider, child) {
-            return CustomActionButton(
-              onPressed: () async {
-                final token = _userToken;
-                final description = _descriptionController.text;
+        floatingActionButton: const FloatBackButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Consumer<StoryProvider>(
+            builder: (context, storyProvider, child) {
+              return CustomActionButton(
+                onPressed: () async {
+                  final token = _userToken;
+                  final description = _descriptionController.text;
 
-                if (_pickedImage != null) {
-                  await storyProvider.addNewStory(token, description, _pickedImage!);
+                  if (_pickedImage != null) {
+                    await storyProvider.addNewStory(
+                        token, description, _pickedImage!);
 
-                  if (storyProvider.addStoryState == ResultState.error) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            storyProvider.addStoryErrorMessage ?? 'An error occurred',
+                    if (storyProvider.addStoryState == ResultState.error) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              storyProvider.addStoryErrorMessage ??
+                                  'An error occurred',
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
+                    } else if (storyProvider.addStoryState ==
+                        ResultState.done) {
+                      widget.onHome();
                     }
-                  } else if (storyProvider.addStoryState == ResultState.done) {
-                    widget.onHome();
                   }
-                }
-              },
-              buttonText: 'Add Story',
-              state: storyProvider.addStoryState,
-            );
-          },
+                },
+                buttonText: AppLocalizations.of(context)!.addStoryButtonText,
+                state: storyProvider.addStoryState,
+              );
+            },
+          ),
         ),
       ),
     );
