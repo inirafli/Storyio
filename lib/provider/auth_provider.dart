@@ -1,3 +1,4 @@
+import 'dart:io'; // Import the 'dart:io' library for SocketException
 import 'package:flutter/material.dart';
 
 import '../common/result_state.dart';
@@ -11,7 +12,9 @@ class AuthProvider with ChangeNotifier {
   ResultState _loginState = ResultState.done;
 
   User? get currentUser => _currentUser;
+
   ResultState get registerState => _registerState;
+
   ResultState get loginState => _loginState;
   String? errorMessage;
 
@@ -32,7 +35,14 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      errorMessage = 'Registration failed, ${_sanitizeErrorMessage(e.toString())}';
+      if (e is SocketException) {
+        errorMessage =
+            'No internet connection. Please check your network settings.';
+      } else {
+        errorMessage =
+            'Registration failed, ${_sanitizeErrorMessage(e.toString())}';
+      }
+
       _registerState = ResultState.error;
       notifyListeners();
     }
@@ -56,7 +66,13 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      errorMessage = 'Login failed, ${_sanitizeErrorMessage(e.toString())}';
+      if (e is SocketException) {
+        errorMessage =
+            'No internet connection. Please check your network settings.';
+      } else {
+        errorMessage = 'Login failed, ${_sanitizeErrorMessage(e.toString())}';
+      }
+
       _loginState = ResultState.error;
       notifyListeners();
     }

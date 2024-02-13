@@ -4,9 +4,12 @@ import '../preferences/auth_preferences.dart';
 import '../ui/add_story_screen.dart';
 import '../ui/home_screen.dart';
 import '../ui/login_screen.dart';
+import '../ui/maps_screen.dart';
 import '../ui/register_screen.dart';
 import '../ui/splash_screen.dart';
 import '../ui/story_detail_screen.dart';
+
+// TODO: Ganti jadi pake GoRouter
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -30,6 +33,7 @@ class MyRouterDelegate extends RouterDelegate
   bool? isLoggedIn;
   bool isRegister = false;
   bool isAdd = false;
+  bool isMaps = false;
 
   List<Page> get _splashStack => const [
         MaterialPage(
@@ -82,27 +86,96 @@ class MyRouterDelegate extends RouterDelegate
             onLogout: () {
               isLoggedIn = false;
               isAdd = false;
+              selectedStory = null;
               notifyListeners();
             },
             onAdd: () {
               isAdd = true;
               notifyListeners();
             },
+            onMaps: () {
+              isMaps = true;
+              notifyListeners();
+            },
           ),
         ),
         MaterialPage(
           key: ValueKey(selectedStory),
-          child: StoryDetailScreen(storyId: selectedStory!),
+          child: StoryDetailScreen(
+            storyId: selectedStory!,
+            onHome: () {
+              selectedStory = null;
+              notifyListeners();
+            },
+          ),
         ),
       ];
     } else if (isAdd) {
       return [
+        MaterialPage(
+          key: const ValueKey("HomeScreen"),
+          child: HomeScreen(
+            onStoryTap: (storyId) {
+              selectedStory = storyId;
+              isAdd = false;
+              notifyListeners();
+            },
+            onLogout: () {
+              isLoggedIn = false;
+              isAdd = false;
+              notifyListeners();
+            },
+            onAdd: () {
+              isAdd = true;
+              notifyListeners();
+            },
+            onMaps: () {
+              isMaps = true;
+              notifyListeners();
+            },
+          ),
+        ),
         MaterialPage(
           key: const ValueKey("AddStoryScreen"),
           child: AddStoryScreen(
             onHome: () {
               isAdd = false;
               selectedStory = null;
+              notifyListeners();
+            },
+          ),
+        ),
+      ];
+    } else if (isMaps) {
+      return [
+        MaterialPage(
+          key: const ValueKey("HomeScreen"),
+          child: HomeScreen(
+            onStoryTap: (storyId) {
+              selectedStory = storyId;
+              isAdd = false;
+              notifyListeners();
+            },
+            onLogout: () {
+              isLoggedIn = false;
+              isAdd = false;
+              notifyListeners();
+            },
+            onAdd: () {
+              isAdd = true;
+              notifyListeners();
+            },
+            onMaps: () {
+              isMaps = true;
+              notifyListeners();
+            },
+          ),
+        ),
+        MaterialPage(
+          key: const ValueKey("MapsScreen"),
+          child: MapsScreen(
+            onHome: () {
+              isMaps = false;
               notifyListeners();
             },
           ),
@@ -125,6 +198,10 @@ class MyRouterDelegate extends RouterDelegate
             },
             onAdd: () {
               isAdd = true;
+              notifyListeners();
+            },
+            onMaps: () {
+              isMaps = true;
               notifyListeners();
             },
           ),
@@ -153,6 +230,7 @@ class MyRouterDelegate extends RouterDelegate
           }
 
           isAdd = false;
+          isMaps = false;
           isRegister = false;
           selectedStory = null;
           notifyListeners();

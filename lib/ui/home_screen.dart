@@ -1,5 +1,7 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storyio/widgets/bottom_navigation_bar.dart';
 import 'package:storyio/widgets/home_app_bar_widget.dart';
 
 import '../common/result_state.dart';
@@ -11,10 +13,15 @@ import '../widgets/story_card_widget.dart';
 class HomeScreen extends StatefulWidget {
   final Function() onLogout;
   final Function() onAdd;
+  final Function() onMaps;
   final ValueChanged<String>? onStoryTap;
 
   const HomeScreen(
-      {Key? key, required this.onLogout, this.onStoryTap, required this.onAdd})
+      {Key? key,
+      required this.onLogout,
+      this.onStoryTap,
+      required this.onAdd,
+      required this.onMaps})
       : super(key: key);
 
   @override
@@ -56,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        extendBody: true,
         appBar: HomeAppBar(onLogout: widget.onLogout),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -88,8 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 MediaQuery.of(context).size.height * 0.65,
                           ),
                           child: Center(
-                            child: Text(storyProvider.storyListErrorMessage ??
-                                'Failed to load Stories'),
+                            child: Text(
+                              storyProvider.storyListErrorMessage ??
+                                  'Failed to load Stories',
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         );
                       case ResultState.done:
@@ -117,16 +128,32 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            widget.onAdd();
-          },
-          shape: const CircleBorder(),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          child: Icon(
-            Icons.edit,
-            color: Theme.of(context).colorScheme.primary,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: SizedBox(
+            height: 82.0,
+            width: 82.0,
+            child: FittedBox(
+              child: FloatingActionButton(
+                shape: const CircleBorder(),
+                onPressed: () {
+                  widget.onAdd();
+                },
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                child: Icon(
+                  Icons.edit,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
           ),
+        ),
+        bottomNavigationBar: CustomBottomNavigation(
+          onLanguage: () {
+            AppSettings.openAppSettings(type: AppSettingsType.device);
+          },
+          onMaps: widget.onMaps,
         ),
       ),
     );

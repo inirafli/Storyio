@@ -71,7 +71,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
             ),
           ),
         ),
-        floatingActionButton: const FloatBackButton(),
+        floatingActionButton: FloatBackButton(onBack: widget.onHome),
         floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -100,6 +100,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                     } else if (storyProvider.addStoryState ==
                         ResultState.done) {
                       widget.onHome();
+                      storyProvider.getAllStories(token);
                     }
                   }
                 },

@@ -1,4 +1,3 @@
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,16 +20,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
       ),
       actions: [
-        IconButton(
-          icon: Icon(
-            Icons.language,
-            size: 20.0,
-            color: Theme.of(context).colorScheme.background,
-          ),
-          onPressed: () {
-            AppSettings.openAppSettings(type: AppSettingsType.device);
-          },
-        ),
         IconButton(
           icon: Icon(
             Icons.exit_to_app,

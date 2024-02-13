@@ -49,8 +49,14 @@ class StoryProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      _storyListErrorMessage =
-          'Failed to fetch Stories, ${_sanitizeErrorMessage(e.toString())}';
+      if (e is SocketException) {
+        _storyListErrorMessage =
+            'No internet connection. Please check your network settings.';
+      } else {
+        _storyListErrorMessage =
+            'Failed to fetch Stories, ${_sanitizeErrorMessage(e.toString())}';
+      }
+
       _storyListState = ResultState.error;
       notifyListeners();
     }
@@ -73,8 +79,14 @@ class StoryProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      _storyDetailErrorMessage =
-          'Failed to fetch Story Detail, ${_sanitizeErrorMessage(e.toString())}';
+      if (e is SocketException) {
+        _storyDetailErrorMessage =
+            'No internet connection. Please check your network settings.';
+      } else {
+        _storyDetailErrorMessage =
+            'Failed to fetch Story Detail, ${_sanitizeErrorMessage(e.toString())}';
+      }
+
       _storyDetailState = ResultState.error;
       notifyListeners();
     }
@@ -99,8 +111,14 @@ class StoryProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      _addStoryErrorMessage =
-          'Failed to add new story, ${_sanitizeErrorMessage(e.toString())}';
+      if (e is SocketException) {
+        _addStoryErrorMessage =
+            'No internet connection. Please check your network settings.';
+      } else {
+        _addStoryErrorMessage =
+            'Failed to add new story, ${_sanitizeErrorMessage(e.toString())}';
+      }
+
       _addStoryState = ResultState.error;
       notifyListeners();
     }

@@ -8,9 +8,12 @@ import '../provider/story_provider.dart';
 import '../widgets/story_detail_widget.dart';
 
 class StoryDetailScreen extends StatefulWidget {
+  final Function() onHome;
   final String storyId;
 
-  const StoryDetailScreen({Key? key, required this.storyId}) : super(key: key);
+  const StoryDetailScreen(
+      {Key? key, required this.storyId, required this.onHome})
+      : super(key: key);
 
   @override
   State<StoryDetailScreen> createState() => _StoryDetailScreenState();
@@ -41,13 +44,15 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                   storyProvider: storyProvider, storyId: widget.storyId);
             case ResultState.error:
               return Center(
-                child: Text(storyProvider.storyDetailErrorMessage ??
-                    'Failed to load Story Detail'),
+                child: Text(
+                    storyProvider.storyDetailErrorMessage ??
+                        'Failed to load Story Detail',
+                    textAlign: TextAlign.center),
               );
           }
         },
       ),
-      floatingActionButton: const FloatBackButton(),
+      floatingActionButton: FloatBackButton(onBack: widget.onHome),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
