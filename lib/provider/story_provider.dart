@@ -11,6 +11,10 @@ class StoryProvider with ChangeNotifier {
   ResultState _storyListState = ResultState.done;
   ResultState _storyDetailState = ResultState.done;
   ResultState _addStoryState = ResultState.done;
+
+  int? pageItems = 1;
+  int sizeItems = 10;
+
   String? _storyListErrorMessage;
   String? _addStoryErrorMessage;
   String? _storyDetailErrorMessage;
@@ -31,16 +35,30 @@ class StoryProvider with ChangeNotifier {
 
   Future<void> getAllStories(String token,
       {int? page, int? size, int? location}) async {
-    _storyListState = ResultState.loading;
-    notifyListeners();
+    if (pageItems == 1) {
+      _storyListState = ResultState.loading;
+      notifyListeners();
+    }
 
     try {
       final response = await ApiService.getAllStories(token,
-          page: page, size: size, location: location);
+          page: pageItems, size: sizeItems, location: location);
 
       if (!response.error) {
         _storyListErrorMessage = null;
-        _storyList = response.listStory;
+
+        if (pageItems == 1) {
+          _storyList = response.listStory;
+        } else {
+          _storyList.addAll(response.listStory);
+        }
+
+        if (response.listStory.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
+
         _storyListState = ResultState.done;
         notifyListeners();
       } else {

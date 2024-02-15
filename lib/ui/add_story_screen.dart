@@ -100,6 +100,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                     } else if (storyProvider.addStoryState ==
                         ResultState.done) {
                       widget.onHome();
+                      storyProvider.pageItems = 1;
                       storyProvider.getAllStories(token);
                     }
                   }

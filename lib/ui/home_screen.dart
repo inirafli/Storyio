@@ -36,7 +36,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadUserData();
-    _loadStories();
+    _loadInitStories();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _loadMoreStories();
+      }
+    });
   }
 
   @override
@@ -52,11 +59,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _loadStories() {
+  void _loadInitStories() {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+    storyProvider.pageItems = 1;
     AuthPreferences.getUserData().then((user) {
       storyProvider.getAllStories(user.token);
     });
+  }
+
+  Future<void> _loadMoreStories() async {
+    final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+    if (storyProvider.pageItems != null) {
+      AuthPreferences.getUserData().then((user) {
+        storyProvider.getAllStories(user.token);
+      });
+    }
   }
 
   @override
@@ -68,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: RefreshIndicator(
           onRefresh: () async {
             await _loadUserData();
-            _loadStories();
+            _loadInitStories();
           },
           child: SingleChildScrollView(
             controller: _scrollController,
@@ -109,10 +126,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           key: const PageStorageKey<String>('storylist'),
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: stories.length,
+                          itemCount: stories.length +
+                              (storyProvider.pageItems != null ? 1 : 0),
                           separatorBuilder: (BuildContext context, int index) =>
                               const SizedBox(height: 24.0),
                           itemBuilder: (context, index) {
+                            if (index == stories.length &&
+                                storyProvider.pageItems != null) {
+                              return const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
                             return StoryCard(
                               story: stories[index],
                               onStoryTap: () {

@@ -74,7 +74,7 @@ class StoryDetailContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      '${AppLocalizations.of(context)!.detailOn}$formattedDate',
+                      '${AppLocalizations.of(context)!.detailOn} $formattedDate',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
