@@ -1,5 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:storyio/data/model/user.dart';
 
+part 'login_responses.g.dart';
+
+@JsonSerializable()
 class LoginResponse {
   final bool error;
   final String message;
@@ -8,11 +12,6 @@ class LoginResponse {
   LoginResponse(
       {required this.error, required this.message, required this.loginResult});
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    return LoginResponse(
-      error: json['error'],
-      message: json['message'],
-      loginResult: User.fromJson(json['loginResult']),
-    );
-  }
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
 }
