@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../preferences/auth_preferences.dart';
 import '../ui/add_story_screen.dart';
@@ -8,8 +9,6 @@ import '../ui/maps_screen.dart';
 import '../ui/register_screen.dart';
 import '../ui/splash_screen.dart';
 import '../ui/story_detail_screen.dart';
-
-// TODO: Ganti jadi pake GoRouter
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -28,12 +27,13 @@ class MyRouterDelegate extends RouterDelegate
   }
 
   String? selectedStory;
+  LatLng? selectedLocation;
 
   List<Page> historyStack = [];
   bool? isLoggedIn;
   bool isRegister = false;
   bool isAdd = false;
-  bool isMaps = false;
+  bool isMap = false;
 
   List<Page> get _splashStack => const [
         MaterialPage(
@@ -93,10 +93,6 @@ class MyRouterDelegate extends RouterDelegate
               isAdd = true;
               notifyListeners();
             },
-            onMaps: () {
-              isMaps = true;
-              notifyListeners();
-            },
           ),
         ),
         MaterialPage(
@@ -129,10 +125,6 @@ class MyRouterDelegate extends RouterDelegate
               isAdd = true;
               notifyListeners();
             },
-            onMaps: () {
-              isMaps = true;
-              notifyListeners();
-            },
           ),
         ),
         MaterialPage(
@@ -140,46 +132,39 @@ class MyRouterDelegate extends RouterDelegate
           child: AddStoryScreen(
             onHome: () {
               isAdd = false;
+              isMap = false;
               selectedStory = null;
+              selectedLocation = null;
+              notifyListeners();
+            },
+            onLocation: () {
+              isMap = true;
+              notifyListeners();
+            },
+            selectedLocation: selectedLocation,
+            updateSelectedLocation: (LatLng? location) {
+              selectedLocation = location;
               notifyListeners();
             },
           ),
         ),
-      ];
-    } else if (isMaps) {
-      return [
-        MaterialPage(
-          key: const ValueKey("HomeScreen"),
-          child: HomeScreen(
-            onStoryTap: (storyId) {
-              selectedStory = storyId;
-              isAdd = false;
-              notifyListeners();
-            },
-            onLogout: () {
-              isLoggedIn = false;
-              isAdd = false;
-              notifyListeners();
-            },
-            onAdd: () {
-              isAdd = true;
-              notifyListeners();
-            },
-            onMaps: () {
-              isMaps = true;
-              notifyListeners();
-            },
+        if (isMap)
+          MaterialPage(
+            key: const ValueKey("MapsScreen"),
+            child: MapsScreen(
+              onBack: () {
+                isAdd = true;
+                isMap = false;
+                notifyListeners();
+              },
+              onLocationPicked: (LatLng location) {
+                isAdd = true;
+                isMap = false;
+                selectedLocation = location;
+                notifyListeners();
+              },
+            ),
           ),
-        ),
-        MaterialPage(
-          key: const ValueKey("MapsScreen"),
-          child: MapsScreen(
-            onHome: () {
-              isMaps = false;
-              notifyListeners();
-            },
-          ),
-        ),
       ];
     } else {
       return [
@@ -198,10 +183,6 @@ class MyRouterDelegate extends RouterDelegate
             },
             onAdd: () {
               isAdd = true;
-              notifyListeners();
-            },
-            onMaps: () {
-              isMaps = true;
               notifyListeners();
             },
           ),
@@ -229,10 +210,17 @@ class MyRouterDelegate extends RouterDelegate
             return false;
           }
 
-          isAdd = false;
-          isMaps = false;
+          if (isMap) {
+            isAdd = true;
+            isMap = false;
+            selectedLocation = null;
+          } else {
+            isAdd = false;
+          }
+
           isRegister = false;
           selectedStory = null;
+          selectedLocation = null;
           notifyListeners();
 
           return true;

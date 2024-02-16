@@ -13,7 +13,7 @@ class FloatBackButton extends StatelessWidget {
         onPressed: onBack,
         mini: true,
         shape: const CircleBorder(),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme.of(context).colorScheme.background,
         child: Icon(
           Icons.arrow_back,
           color: Theme.of(context).colorScheme.primary,

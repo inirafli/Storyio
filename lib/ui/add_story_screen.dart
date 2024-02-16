@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -16,8 +18,17 @@ import '../widgets/float_back_widget.dart';
 
 class AddStoryScreen extends StatefulWidget {
   final Function() onHome;
+  final Function() onLocation;
+  final LatLng? selectedLocation;
+  final Function(LatLng?) updateSelectedLocation;
 
-  const AddStoryScreen({Key? key, required this.onHome}) : super(key: key);
+  const AddStoryScreen(
+      {Key? key,
+      required this.onHome,
+      required this.onLocation,
+      this.selectedLocation,
+      required this.updateSelectedLocation})
+      : super(key: key);
 
   @override
   State<AddStoryScreen> createState() => _AddStoryScreenState();
@@ -75,40 +86,80 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Consumer<StoryProvider>(
-            builder: (context, storyProvider, child) {
-              return CustomActionButton(
-                onPressed: () async {
-                  final token = _userToken;
-                  final description = _descriptionController.text;
+          child: Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Consumer<StoryProvider>(
+                  builder: (context, storyProvider, child) {
+                    return CustomActionButton(
+                      onPressed: () async {
+                        final token = _userToken;
+                        final description = _descriptionController.text;
 
-                  if (_pickedImage != null) {
-                    await storyProvider.addNewStory(
-                        token, description, _pickedImage!);
+                        if (_pickedImage != null) {
+                          await storyProvider.addNewStory(
+                              token, description, _pickedImage!,
+                              location: widget.selectedLocation);
 
-                    if (storyProvider.addStoryState == ResultState.error) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              storyProvider.addStoryErrorMessage ??
-                                  'An error occurred',
-                            ),
-                          ),
-                        );
-                      }
-                    } else if (storyProvider.addStoryState ==
-                        ResultState.done) {
-                      widget.onHome();
-                      storyProvider.pageItems = 1;
-                      storyProvider.getAllStories(token);
+                          if (storyProvider.addStoryState ==
+                              ResultState.error) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    storyProvider.addStoryErrorMessage ??
+                                        'An error occurred',
+                                  ),
+                                ),
+                              );
+                            }
+                          } else if (storyProvider.addStoryState ==
+                              ResultState.done) {
+                            widget.onHome();
+                            storyProvider.pageItems = 1;
+                            storyProvider.getAllStories(token);
+                          }
+                        }
+                      },
+                      buttonText:
+                          AppLocalizations.of(context)!.addStoryButtonText,
+                      state: storyProvider.addStoryState,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 12.0),
+              Expanded(
+                flex: 1,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (widget.selectedLocation != null) {
+                      print(
+                          'Selected Locations LatLng: ${widget.selectedLocation}');
+                      widget.updateSelectedLocation(null);
+                    } else {
+                      widget.onLocation();
                     }
-                  }
-                },
-                buttonText: AppLocalizations.of(context)!.addStoryButtonText,
-                state: storyProvider.addStoryState,
-              );
-            },
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.selectedLocation != null
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.background,
+                    foregroundColor: widget.selectedLocation != null
+                        ? Theme.of(context).colorScheme.background
+                        : Theme.of(context).colorScheme.primary,
+                    side: BorderSide(
+                      width: 1.5,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  child: widget.selectedLocation != null
+                      ? const Icon(Icons.location_on)
+                      : const Icon(Icons.location_on_outlined),
+                ),
+              ),
+            ],
           ),
         ),
       ),

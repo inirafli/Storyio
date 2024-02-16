@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/auth_provider.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   final Function() onLanguage;
-  final Function() onMaps;
+  final Function() onLogout;
 
   const CustomBottomNavigation({
     Key? key,
     required this.onLanguage,
-    required this.onMaps,
+    required this.onLogout,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 66.0,
+      height: 60.0,
       child: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 4.0,
@@ -25,7 +28,7 @@ class CustomBottomNavigation extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.language,
-                size: 26.0,
+                size: 24.0,
                 color: Theme.of(context).colorScheme.background,
               ),
               onPressed: onLanguage,
@@ -33,11 +36,16 @@ class CustomBottomNavigation extends StatelessWidget {
             const SizedBox(width: 72.0),
             IconButton(
               icon: Icon(
-                Icons.location_on,
-                size: 26.0,
+                Icons.logout,
+                size: 24.0,
                 color: Theme.of(context).colorScheme.background,
               ),
-              onPressed: onMaps,
+              onPressed: () async {
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+                await authProvider.logoutUser();
+                onLogout();
+              },
             ),
           ],
         ),

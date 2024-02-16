@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../common/result_state.dart';
 import '../data/api/api_services.dart';
@@ -111,13 +112,13 @@ class StoryProvider with ChangeNotifier {
   }
 
   Future<void> addNewStory(String token, String description, File photo,
-      {double? lat, double? lon}) async {
+      {LatLng? location,}) async {
     _addStoryState = ResultState.loading;
     notifyListeners();
 
     try {
       final response = await ApiService.addNewStory(token, description, photo,
-          lat: lat, lon: lon);
+          lat: location?.latitude, lon: location?.longitude);
 
       if (!response.error) {
         _addStoryErrorMessage = null;

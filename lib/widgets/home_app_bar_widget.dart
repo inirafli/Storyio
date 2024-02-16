@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../provider/auth_provider.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Function() onLogout;
-
-  const HomeAppBar({Key? key, required this.onLogout}) : super(key: key);
+  const HomeAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,21 +14,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.bold,
             ),
       ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.exit_to_app,
-            size: 20.0,
-            color: Theme.of(context).colorScheme.background,
-          ),
-          onPressed: () async {
-            final authProvider =
-                Provider.of<AuthProvider>(context, listen: false);
-            await authProvider.logoutUser();
-            onLogout();
-          },
-        ),
-      ],
     );
   }
 

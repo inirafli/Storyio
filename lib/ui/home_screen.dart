@@ -13,16 +13,14 @@ import '../widgets/story_card_widget.dart';
 class HomeScreen extends StatefulWidget {
   final Function() onLogout;
   final Function() onAdd;
-  final Function() onMaps;
   final ValueChanged<String>? onStoryTap;
 
-  const HomeScreen(
-      {Key? key,
-      required this.onLogout,
-      this.onStoryTap,
-      required this.onAdd,
-      required this.onMaps})
-      : super(key: key);
+  const HomeScreen({
+    Key? key,
+    required this.onLogout,
+    this.onStoryTap,
+    required this.onAdd,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -81,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         extendBody: true,
-        appBar: HomeAppBar(onLogout: widget.onLogout),
+        appBar: const HomeAppBar(),
         body: RefreshIndicator(
           onRefresh: () async {
             await _loadUserData();
@@ -160,8 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: Padding(
           padding: const EdgeInsets.all(4.0),
           child: SizedBox(
-            height: 82.0,
-            width: 82.0,
+            height: 72.0,
+            width: 72.0,
             child: FittedBox(
               child: FloatingActionButton(
                 shape: const CircleBorder(),
@@ -181,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onLanguage: () {
             AppSettings.openAppSettings(type: AppSettingsType.device);
           },
-          onMaps: widget.onMaps,
+          onLogout: widget.onLogout,
         ),
       ),
     );
