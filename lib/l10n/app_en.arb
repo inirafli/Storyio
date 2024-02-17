@@ -19,7 +19,10 @@
   "labelSubGreet": "Discover new stories and share your own",
   "detailLabel": "Posted by ",
   "detailOn": "on",
+  "detailLocationOn":"Posted At",
+  "detailNoLocation": "No location attached to this Story",
   "imageHolderText": "Your Image will be displayed here",
   "descHintText": "Enter story description...",
-  "addStoryButtonText": "Add Story"
+  "addStoryButtonText": "Add Story",
+  "selectLocationButton": "Select Location"
 }

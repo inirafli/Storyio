@@ -20,7 +20,10 @@
   "labelSubGreet": "Temukan cerita baru dan bagikan ceritamu",
   "detailLabel": "Diposting oleh ",
   "detailOn": "pada",
+  "detailLocationOn": "Diposting Di",
+  "detailNoLocation": "Tidak ada lokasi yang terkait dengan Cerita ini",
   "imageHolderText": "Gambar Anda akan ditampilkan di sini",
   "descHintText": "Masukkan deskripsi cerita...",
-  "addStoryButtonText": "Tambahkan Cerita"
+  "addStoryButtonText": "Tambahkan Cerita",
+  "selectLocationButton": "Pilih Lokasi"
 }

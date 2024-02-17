@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:location/location.dart';
 
+import '../common/common.dart';
 import '../widgets/float_back_widget.dart';
 import '../widgets/location_info_widget.dart';
 
@@ -130,7 +131,7 @@ class _MapsScreenState extends State<MapsScreen> {
               child: ElevatedButton(
                 onPressed: _selectedLocation != null ? _onSelectLocation : null,
                 child: Text(
-                  'Select Location',
+                  AppLocalizations.of(context)!.selectLocationButton,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: Theme.of(context).colorScheme.background,
                       ),

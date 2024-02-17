@@ -78,7 +78,7 @@ class StoryDetailContent extends StatelessWidget {
                   ),
                   const SizedBox(height: 24.0),
                   Text(
-                    'Posted At',
+                    AppLocalizations.of(context)!.detailLocationOn,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -123,7 +123,7 @@ class StoryDetailContent extends StatelessWidget {
                       height: 130,
                       alignment: Alignment.center,
                       child: Text(
-                        'No location attached to this Story',
+                        AppLocalizations.of(context)!.detailNoLocation,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
