@@ -4,9 +4,15 @@ import 'package:geocoding/geocoding.dart' as geo;
 
 class LocationInfoWidget extends StatelessWidget {
   final LatLng? selectedLocation;
+  final double titleFontSize;
+  final double subtitleFontSize;
 
-  const LocationInfoWidget({Key? key, required this.selectedLocation})
-      : super(key: key);
+  const LocationInfoWidget({
+    Key? key,
+    required this.selectedLocation,
+    this.titleFontSize = 20.0,
+    this.subtitleFontSize = 14.0,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +60,7 @@ class LocationInfoWidget extends StatelessWidget {
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
-                                fontSize: 20.0,
+                                fontSize: titleFontSize,
                               ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -64,6 +70,7 @@ class LocationInfoWidget extends StatelessWidget {
                       '${placemark.subLocality}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.primary,
+                            fontSize: subtitleFontSize,
                           ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
