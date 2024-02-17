@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:storyio/common/flavor_config.dart';
 
 import '../common/common.dart';
 import '../common/result_state.dart';
@@ -60,6 +60,8 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final flavor = FlavorConfig.instance.flavor;
+
     return SafeArea(
       child: Scaffold(
         body: Center(
@@ -129,36 +131,36 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                   },
                 ),
               ),
-              const SizedBox(width: 12.0),
-              Expanded(
-                flex: 1,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (widget.selectedLocation != null) {
-                      print(
-                          'Selected Locations LatLng: ${widget.selectedLocation}');
-                      widget.updateSelectedLocation(null);
-                    } else {
-                      widget.onLocation();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.selectedLocation != null
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.background,
-                    foregroundColor: widget.selectedLocation != null
-                        ? Theme.of(context).colorScheme.background
-                        : Theme.of(context).colorScheme.primary,
-                    side: BorderSide(
-                      width: 1.5,
-                      color: Theme.of(context).colorScheme.primary,
+              if (flavor == FlavorType.paid) ...[
+                const SizedBox(width: 12.0),
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (widget.selectedLocation != null) {
+                        widget.updateSelectedLocation(null);
+                      } else {
+                        widget.onLocation();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: widget.selectedLocation != null
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.background,
+                      foregroundColor: widget.selectedLocation != null
+                          ? Theme.of(context).colorScheme.background
+                          : Theme.of(context).colorScheme.primary,
+                      side: BorderSide(
+                        width: 1.5,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
+                    child: widget.selectedLocation != null
+                        ? const Icon(Icons.location_on)
+                        : const Icon(Icons.location_on_outlined),
                   ),
-                  child: widget.selectedLocation != null
-                      ? const Icon(Icons.location_on)
-                      : const Icon(Icons.location_on_outlined),
                 ),
-              ),
+              ],
             ],
           ),
         ),

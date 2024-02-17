@@ -26,7 +26,7 @@ class _StoryCardState extends State<StoryCard>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 450),
+      duration: const Duration(milliseconds: 500),
     );
 
     _slideAnimation = Tween<Offset>(
