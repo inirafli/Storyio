@@ -20,4 +20,4 @@ Storyio utilizes the following technologies:
 - **Localization support:** Supports both English (EN) and Indonesian (ID) languages.
   <br></br>
 ## Preview
-![Storyio Preview](screenshots/storyio_preview.png)
+![Storyio Preview](screenshots/storyio_screenshot.png)
