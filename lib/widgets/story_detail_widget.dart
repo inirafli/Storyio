@@ -87,22 +87,25 @@ class StoryDetailContent extends StatelessWidget {
                   if (story.lat != 0 && story.lon != 0)
                     Stack(
                       children: [
-                        SizedBox(
-                          height: 320,
-                          child: GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                              target: LatLng(story.lat, story.lon),
-                              zoom: 15,
-                            ),
-                            markers: {
-                              Marker(
-                                markerId:
-                                    const MarkerId('story_location_marker'),
-                                position: LatLng(story.lat, story.lon),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            height: 320,
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(story.lat, story.lon),
+                                zoom: 15,
                               ),
-                            },
-                            padding: const EdgeInsets.only(
-                              bottom: 104.0,
+                              markers: {
+                                Marker(
+                                  markerId:
+                                      const MarkerId('story_location_marker'),
+                                  position: LatLng(story.lat, story.lon),
+                                ),
+                              },
+                              padding: const EdgeInsets.only(
+                                bottom: 104.0,
+                              ),
                             ),
                           ),
                         ),
